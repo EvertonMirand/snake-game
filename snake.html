@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Snake</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+	</head>
+	<body>
+		<canvas id="stage" width="400" height="400"> </canvas>
+		<script type="text/javascript">
+			window.onload = function() {
+				var stage = document.getElementById('stage');
+				var context = stage.getContext('2d');
+				document.addEventListener('keydown', keyPushed);
+
+				setInterval(game, 50);
+
+				const vel = 1;
+
+				var velocityX = (velocityY = 0);
+				var positionX = 10;
+				var positionY = 15;
+				var lenghtPiece = 20;
+				var quantityOfPieces = 20;
+				var appleX = (appleY = 15);
+				var trail = [];
+				var tail = 5;
+
+				function game() {
+					positionX += velocityX;
+					positionY += velocityY;
+
+					if (positionX < 0) {
+						positionX = quantityOfPieces - 1;
+					}
+
+					if (positionX > quantityOfPieces - 1) {
+						positionX = 0;
+					}
+
+					if (positionY < 0) {
+						positionY = quantityOfPieces - 1;
+					}
+
+					if (positionY > quantityOfPieces - 1) {
+						positionY = 0;
+					}
+
+					context.fillStyle = 'black';
+					context.fillRect(0, 0, stage.width, stage.height);
+
+					context.fillStyle = 'red';
+					context.fillRect(appleX * lenghtPiece, appleY * lenghtPiece, lenghtPiece, lenghtPiece);
+
+					context.fillStyle = '#fff';
+
+					for (var i = 0; i < trail.length; i++) {
+						const currentTrail = trail[i];
+
+						context.fillRect(currentTrail.x * lenghtPiece, currentTrail.y * lenghtPiece, lenghtPiece, lenghtPiece);
+						if (currentTrail.x == positionX && currentTrail.y == positionY) {
+							velocityX = velocityY = 0;
+							tail = 5;
+						}
+					}
+					trail.push({
+						x: positionX,
+						y: positionY,
+					});
+
+					while (trail.length > tail) {
+						trail.shift();
+					}
+
+					if (appleX == positionX && appleY == positionY) {
+						tail++;
+						appleX = Math.floor(Math.random() * quantityOfPieces);
+						appleY = Math.floor(Math.random() * quantityOfPieces);
+					}
+				}
+
+				function keyPushed(event) {
+					switch (event.keyCode) {
+						case 37: //Left
+							velocityX = -vel;
+							velocityY = 0;
+							break;
+						case 38: //Up
+							velocityX = 0;
+							velocityY = -vel;
+							break;
+						case 39: //Right
+							velocityX = vel;
+							velocityY = 0;
+							break;
+						case 40: //Down
+							velocityX = 0;
+							velocityY = vel;
+							break;
+
+						default:
+							break;
+					}
+				}
+			};
+		</script>
+	</body>
+</html>
